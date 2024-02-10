@@ -1,24 +1,54 @@
 {
 
-   "presets": ["@babel/preset-env", "@babel/preset-react"],
-  "type": "module",
-  "name": "node-pf",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node app.js"
-  },
-  "author": "shmagi narsavidze",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.23.9",
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
-    "@babel/preset-react": "^7.23.3"
-  }
+   "presets": [
+
+      "@babel/preset-env",
+
+      "@babel/preset-react"
+
+   ],
+
+   "type": "module",
+
+   "name": "node-pf",
+
+   "version": "1.0.0",
+
+   "description": "",
+
+   "main": "index.js",
+
+   "scripts": {
+
+      "test": "echo \"Error: no test specified\" && exit 1",
+
+      "start": "babel-node app.js"
+
+   },
+
+   "author": "shmagi narsavidze",
+
+   "license": "ISC",
+
+   "dependencies": {
+
+      "cors": "^2.8.5",
+
+      "express": "^4.18.2"
+
+   },
+
+   "devDependencies": {
+
+      "@babel/cli": "^7.23.9",
+
+      "@babel/core": "^7.23.9",
+
+      "@babel/preset-env": "^7.23.9",
+
+      "@babel/preset-react": "^7.23.3"
+
+   }
+
 }
+

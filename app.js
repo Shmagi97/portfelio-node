@@ -3,7 +3,7 @@ import express from "express";
 const app = express();
 const port = 3001;
 
-app.get("/api/content", (req, res) => {
+app.get("/register", (req, res) => {
   res.send(`
     <html>
       <head>
