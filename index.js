@@ -22,14 +22,9 @@ mongoose
 // Connect to MongoDB in cluster0 in databeiz Users
 
 const dbUsers = mongoose.connection.useDb("Users");
-const user = dbUsers.model(
-  "user",
-  new mongoose.Schema({
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+
+const userSchema = new mongoose.Schema({
+  values: {
     email: {
       type: String,
       required: true,
@@ -39,27 +34,54 @@ const user = dbUsers.model(
       type: String,
       required: true,
     },
-  }),
-  "users-register"
-);
+    confirm: {
+      type: String,
+      required: true,
+    },
+    nickname: {
+      type: String,
+      required: true,
+    },
+    prefix: {
+      type: Number,
+      required: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
+    },
+    agreement: {
+      type: Boolean,
+      required: true,
+    },
+  },
+});
+const user = dbUsers.model("user", userSchema, "users-register");
 
 app.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { values } = req.body;
   console.log("Received data:", req.body);
-  console.log("Received data:", username, email, password);
+  console.log("Received data:", values);
 
   //  validation
-  if (!username || !email || !password) {
+  if (
+    !values.email ||
+    !values.password ||
+    !values.confirm ||
+    !values.nickname ||
+    !values.prefix ||
+    !values.phone
+  ) {
     return res.status(400).json({ error: "Please fill in all fields" });
   }
 
   try {
-    const existingUser = await user.findOne({ username });
+    const existingUser = await user.findOne({ nickname: values.nickname });
     if (existingUser) {
       return res.status(400).json({ error: "Username already exists" });
     }
 
-    const newUser = new user({ username, email, password });
+    const newUser = new user(values);
     await newUser.save();
 
     res.status(201).json({ message: "Registration successful!" });
@@ -69,19 +91,19 @@ app.post("/register", async (req, res) => {
   }
 });
 
-const findEdUser = "nikala10";
+// const findEdUser = "nikala10";
 
-try {
-  const findUser = await user.findOne({ username: findEdUser });
+// try {
+//   const findUser = await user.findOne({ username: findEdUser });
 
-  if (findUser) {
-    console.log("find user", findUser);
-  } else {
-    console.log("user notFound");
-  }
-} catch (err) {
-  console.error(err);
-}
+//   if (findUser) {
+//     console.log("find user", findUser);
+//   } else {
+//     console.log("user notFound");
+//   }
+// } catch (err) {
+//   console.error(err);
+// }
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Server running  http://localhost:${port}`));
