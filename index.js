@@ -24,77 +24,99 @@ mongoose
 const dbUsers = mongoose.connection.useDb("Users");
 
 const userSchema = new mongoose.Schema({
-  values: {
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    confirm: {
-      type: String,
-      required: true,
-    },
-    nickname: {
-      type: String,
-      required: true,
-    },
-    prefix: {
-      type: Number,
-      required: true,
-    },
-    phone: {
-      type: Number,
-      required: true,
-    },
-    agreement: {
-      type: Boolean,
-      required: true,
-    },
+  email: {
+    type: String,
+  },
+  password: {
+    type: String,
+  },
+  confirm: {
+    type: String,
+  },
+  nickname: {
+    type: String,
+  },
+  prefix: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  agreement: {
+    type: Boolean,
   },
 });
 const user = dbUsers.model("user", userSchema, "users-register");
 
 app.post("/register", async (req, res) => {
-  const { values } = req.body;
-  console.log("Received data:", req.body);
-  console.log("Received data:", values);
+  const { email, password, confirm, nickname, prefix, phone, agreement } =
+    req.body;
+  // console.log("Received data:", req.body);
+  // console.log("Received data:", register.nickname);
 
   //  validation
-  if (
-    !values.email ||
-    !values.password ||
-    !values.confirm ||
-    !values.nickname ||
-    !values.prefix ||
-    !values.phone
-  ) {
-    return res.status(400).json({ error: "Please fill in all fields" });
-  }
+  // if (
+  //   !register.email ||
+  //   !register.password ||
+  //   !register.confirm ||
+  //   !register.nickname ||
+  //   !register.prefix ||
+  //   !register.phone
+  // ) {
+  //   return res.status(400).json({ error: "Please fill in all fields" });
+  // }
 
   try {
-    const existingUser = await user.findOne({ nickname: values.nickname });
+    const existingUser = await user.findOne(
+      { email } || { nickname } || { phone }
+    );
+
+    // ar aris dasrulebuli problemaa tanmimdevroba validaciis gasworebis
+
     if (existingUser) {
-      return res.status(400).json({ error: "Username already exists" });
+      let errorInfo = "";
+
+      if (existingUser.email == email) {
+        errorInfo = "მეილით, ";
+      }
+
+      if (existingUser.nickname == nickname) {
+        errorInfo = "სახელით, ";
+      }
+
+      if (existingUser.phone == phone) {
+        errorInfo = "ნომრით, ";
+      }
+
+      errorInfo = errorInfo.slice(0, -2);
+      return res
+        .status(400)
+        .json({ error: `ამ ${errorInfo} მომხმარებელი უკვე არსებობს` });
+    } else {
+      const newUser = new user({
+        email,
+        password,
+        confirm,
+        nickname,
+        prefix,
+        phone,
+        agreement,
+      });
+      await newUser.save();
+      res.status(201).json({ message: "რეგისტრაცია წარმატებულია" });
     }
-
-    const newUser = new user(values);
-    await newUser.save();
-
-    res.status(201).json({ message: "Registration successful!" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: "სერვერზე მოხდა შეცდომა ", details: err.message });
   }
 });
 
 // const findEdUser = "nikala10";
 
 // try {
-//   const findUser = await user.findOne({ username: findEdUser });
+//   const findUser = await user.findOne({ register });
 
 //   if (findUser) {
 //     console.log("find user", findUser);
