@@ -60,22 +60,24 @@ app.post("/register", async (req, res) => {
   } = req.body;
 
   try {
-    try {
-      const findUser = await user.findOne({
-        nickname: nameValue,
-        password: paswordValue,
-      });
+    if (nameValue && paswordValue) {
+      try {
+        const findUser = await user.findOne({
+          nickname: nameValue,
+          password: paswordValue,
+        });
 
-      if (findUser) {
-        console.log("find user", findUser);
-        return res.status(200).json({ loggin: "წარმატებული შესვლა" });
-      } else {
-        console.log("user notFound");
-        return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
+        if (findUser) {
+          console.log("find user", findUser);
+          return res.status(201).json({ loggin: "წარმატებული შესვლა" });
+        } else {
+          console.log("user notFound");
+          return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
+        }
+      } catch (err) {
+        console.error(err);
+        res.status(400).json({ error: "სერვერზე მოხდა შეცდომა " });
       }
-    } catch (err) {
-      console.error(err);
-      res.status(400).json({ error: "სერვერზე მოხდა შეცდომა " });
     }
 
     const existingUser = await user.findOne(
@@ -121,20 +123,6 @@ app.post("/register", async (req, res) => {
       .json({ error: "სერვერზე მოხდა შეცდომა ", details: err.message });
   }
 });
-
-// const findEdUserName = "nikala1997";
-
-// try {
-//   const findUser = await user.findOne({ nickname: findEdUserName });
-
-//   if (findUser) {
-//     console.log("find user", findUser);
-//   } else {
-//     console.log("user notFound");
-//   }
-// } catch (err) {
-//   console.error(err);
-// }
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Server running  http://localhost:${port}`));
