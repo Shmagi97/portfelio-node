@@ -19,8 +19,6 @@ mongoose
   .then(() => console.log("conect mongoDB"))
   .catch((err) => console.error(err));
 
-// Connect to MongoDB in cluster0 in databeiz Users
-
 const dbUsers = mongoose.connection.useDb("Users");
 
 const userSchema = new mongoose.Schema({
@@ -49,29 +47,40 @@ const userSchema = new mongoose.Schema({
 const user = dbUsers.model("user", userSchema, "users-register");
 
 app.post("/register", async (req, res) => {
-  const { email, password, confirm, nickname, prefix, phone, agreement } =
-    req.body;
-  // console.log("Received data:", req.body);
-  // console.log("Received data:", register.nickname);
-
-  //  validation
-  // if (
-  //   !register.email ||
-  //   !register.password ||
-  //   !register.confirm ||
-  //   !register.nickname ||
-  //   !register.prefix ||
-  //   !register.phone
-  // ) {
-  //   return res.status(400).json({ error: "Please fill in all fields" });
-  // }
+  const {
+    email,
+    password,
+    confirm,
+    nickname,
+    prefix,
+    phone,
+    agreement,
+    nameValue,
+    paswordValue,
+  } = req.body;
 
   try {
+    try {
+      const findUser = await user.findOne({
+        nickname: nameValue,
+        password: paswordValue,
+      });
+
+      if (findUser) {
+        console.log("find user", findUser);
+        return res.status(200).json({ loggin: "წარმატებული შესვლა" });
+      } else {
+        console.log("user notFound");
+        return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({ error: "სერვერზე მოხდა შეცდომა " });
+    }
+
     const existingUser = await user.findOne(
       { email } || { nickname } || { phone }
     );
-
-    // ar aris dasrulebuli problemaa tanmimdevroba validaciis gasworebis
 
     if (existingUser) {
       let errorInfo = "";
@@ -113,10 +122,10 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// const findEdUser = "nikala10";
+// const findEdUserName = "nikala1997";
 
 // try {
-//   const findUser = await user.findOne({ register });
+//   const findUser = await user.findOne({ nickname: findEdUserName });
 
 //   if (findUser) {
 //     console.log("find user", findUser);
