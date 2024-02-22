@@ -9,17 +9,28 @@ router.get("/", (req, res) => {
 
 const dbRegisterUserInfo = mongoose.connection.useDb("Users");
 
-const photoSchema = new mongoose.Schema({
-  filename: String,
-});
+// const photoSchema = new mongoose.Schema({
+//   uid: String,
+//   lastModified: Number,
+//   lastModifiedDate: Date,
+//   name: String,
+//   size: Number,
+//   type: String,
+//   percent: Number,
+//   originFileObj: {
+//     uid: String,
+//   },
+//   status: String,
+// });
 
 const userSchema = new mongoose.Schema({
+  nameAndSurname: {
+    type: String,
+  },
   radioInfo: {
     type: String,
   },
-  nameAndSurname: {
-    String,
-  },
+
   address: {
     type: String,
   },
@@ -27,7 +38,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   CompanyExperienceDuration: {
-    type: Date,
+    type: [Date],
   },
   education: {
     type: String,
@@ -35,14 +46,31 @@ const userSchema = new mongoose.Schema({
   experience: {
     type: String,
   },
-  //   uploadPhoto: [photoSchema],
+  workingValueChange: {
+    type: Boolean,
+  },
+  newUploadPhoto: [
+    {
+      uid: { String },
+      lastModified: { Number },
+      lastModifiedDate: { Date },
+      name: { String },
+      size: { Number },
+      type: { String },
+      percent: { Number },
+      originFileObj: {
+        uid: { String },
+      },
+      status: { String },
+    },
+  ],
 
-  //   sliderSkills: [
-  //     {
-  //       name: { String },
-  //       value: { Number },
-  //     },
-  //   ],
+  sliderSkills: [
+    {
+      name: { String },
+      value: { Number },
+    },
+  ],
   linkFacebook: {
     type: String,
     validate: {
@@ -112,13 +140,40 @@ router.post("/", async (req, res) => {
     linkLinkedln,
   } = req.body;
 
-  //   console.log(req.body.nameAndSurname);
+  // vinaidan monacemta bazashi shevinaxe foto exl gasatestia am fotos wamogeba da frontze gamotana
 
   try {
+    if (uploadPhoto !== undefined) {
+      var newUploadPhoto = uploadPhoto.map((el) => {
+        const { xhr, thumbUrl, response, ...reset } = el;
+        return reset;
+      });
+    }
+
     const newUser = new user({
+      radioinfo,
       nameAndSurname,
+      address,
+      dateOfBirth,
+      CompanyExperienceDuration,
+      education,
+      experience,
+      workingValueChange,
+      newUploadPhoto,
+      sliderSkills,
+      linkFacebook,
+      linkGithub,
+      linkLinkedln,
     });
-    await newUser.save();
+    await newUser
+      .save()
+      .then((saved) => {
+        console.log("saved items mongoDB", saved);
+      })
+      .catch((err) => {
+        console.log("saved items failed", err);
+      });
+
     res.status(200);
     json({ message: "მონაცემები აიტვირთა წარმატებით" });
   } catch (error) {

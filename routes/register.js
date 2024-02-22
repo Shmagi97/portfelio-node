@@ -47,8 +47,6 @@ router.post("/", async (req, res) => {
     paswordValue,
   } = req.body;
 
-  console.log(req.body);
-
   try {
     if (nameValue && paswordValue) {
       try {
@@ -58,10 +56,8 @@ router.post("/", async (req, res) => {
         });
 
         if (findUser) {
-          console.log("find user", findUser);
           return res.status(201).json({ loggin: "წარმატებული შესვლა" });
         } else {
-          console.log("user notFound");
           return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
         }
       } catch (err) {
@@ -89,7 +85,6 @@ router.post("/", async (req, res) => {
         errorInfo = "ნომრით, ";
       }
 
-      errorInfo = errorInfo.slice(0, -2);
       return res
         .status(400)
         .json({ error: `ამ ${errorInfo} მომხმარებელი უკვე არსებობს` });
