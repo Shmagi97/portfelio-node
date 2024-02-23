@@ -2,9 +2,9 @@ import express from "express";
 import registerRouter from "./register.js";
 import registerEdUserRouter from "./registerEdUserInfo.js";
 
-const router = express.Router();
+const routers = express.Router();
 
-router.use("/register", registerRouter);
-router.use("/registerEdUserInfo", registerEdUserRouter);
+routers.use("/register", registerRouter);
+routers.use("/registerEdUserInfo", registerEdUserRouter);
 
-export default router;
+export default routers;

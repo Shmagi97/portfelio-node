@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import router from "./routes/routes.js";
+import routers from "./routes/routes.js";
 
 const app = express();
 app.use(cors());
@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log("conect mongoDB"))
   .catch((err) => console.error(err));
 
-app.use("/", router);
+app.use("/", routers);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Server running  http://localhost:${port}`));

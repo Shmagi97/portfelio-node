@@ -9,25 +9,14 @@ router.get("/", (req, res) => {
 
 const dbRegisterUserInfo = mongoose.connection.useDb("Users");
 
-// const photoSchema = new mongoose.Schema({
-//   uid: String,
-//   lastModified: Number,
-//   lastModifiedDate: Date,
-//   name: String,
-//   size: Number,
-//   type: String,
-//   percent: Number,
-//   originFileObj: {
-//     uid: String,
-//   },
-//   status: String,
-// });
-
 const userSchema = new mongoose.Schema({
+  identifier: {
+    type: String,
+  },
   nameAndSurname: {
     type: String,
   },
-  radioInfo: {
+  radioinfo: {
     type: String,
   },
 
@@ -118,12 +107,27 @@ const userSchema = new mongoose.Schema({
       message: "Invalid URL Format",
     },
   },
+  selectProfesionUser: [
+    {
+      selectedProfesion: [String],
+    },
+  ],
+  companyName: {
+    type: String,
+  },
+  CompanyActivity: {
+    type: String,
+  },
+  CompanyLoans: {
+    type: String,
+  },
 });
 
 const user = dbRegisterUserInfo.model("user", userSchema, "registerEdUserInfo");
 
 router.post("/", async (req, res) => {
   const {
+    identifier,
     radioinfo,
     nameAndSurname,
     address,
@@ -138,9 +142,11 @@ router.post("/", async (req, res) => {
     linkFacebook,
     linkGithub,
     linkLinkedln,
+    selectProfesionUser,
+    companyName,
+    CompanyActivity,
+    CompanyLoans,
   } = req.body;
-
-  // vinaidan monacemta bazashi shevinaxe foto exl gasatestia am fotos wamogeba da frontze gamotana
 
   try {
     if (uploadPhoto !== undefined) {
@@ -150,29 +156,58 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const newUser = new user({
-      radioinfo,
-      nameAndSurname,
-      address,
-      dateOfBirth,
-      CompanyExperienceDuration,
-      education,
-      experience,
-      workingValueChange,
-      newUploadPhoto,
-      sliderSkills,
-      linkFacebook,
-      linkGithub,
-      linkLinkedln,
-    });
-    await newUser
-      .save()
-      .then((saved) => {
-        console.log("saved items mongoDB", saved);
-      })
-      .catch((err) => {
-        console.log("saved items failed", err);
+    if (radioinfo === "employable") {
+      const newUser = new user({
+        identifier,
+        radioinfo,
+        nameAndSurname,
+        address,
+        dateOfBirth,
+        CompanyExperienceDuration,
+        education,
+        experience,
+        workingValueChange,
+        newUploadPhoto,
+        sliderSkills,
+        linkFacebook,
+        linkGithub,
+        linkLinkedln,
+        selectProfesionUser,
       });
+
+      await newUser
+        .save()
+        .then((saved) => {
+          console.log("saved employable mongoDB", saved);
+        })
+        .catch((err) => {
+          console.log("saved employable failed", err);
+        });
+    } else {
+      const newUser = new user({
+        identifier,
+        radioinfo,
+        nameAndSurname,
+        address,
+        dateOfBirth,
+        CompanyExperienceDuration,
+        newUploadPhoto,
+        companyName,
+        CompanyActivity,
+        CompanyLoans,
+      });
+
+      await newUser
+        .save()
+        .then((saved) => {
+          console.log("saved employer mongoDB", saved);
+          res.redirect(`/registerEdUserInfo${saved._id}`);
+          // redirect - ით გასატესტია
+        })
+        .catch((err) => {
+          console.log("saved employer failed", err);
+        });
+    }
 
     res.status(200);
     json({ message: "მონაცემები აიტვირთა წარმატებით" });

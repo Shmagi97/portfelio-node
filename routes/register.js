@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   confirm: {
     type: String,
   },
-  nickname: {
+  identifier: {
     type: String,
   },
   prefix: {
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     email,
     password,
     confirm,
-    nickname,
+    identifier,
     prefix,
     phone,
     agreement,
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
     if (nameValue && paswordValue) {
       try {
         const findUser = await user.findOne({
-          nickname: nameValue,
+          identifier: nameValue,
           password: paswordValue,
         });
 
@@ -67,33 +67,31 @@ router.post("/", async (req, res) => {
     }
 
     const existingUser = await user.findOne(
-      { email } || { nickname } || { phone }
+      { email } || { identifier } || { phone }
     );
 
     if (existingUser) {
       let errorInfo = "";
 
       if (existingUser.email == email) {
-        errorInfo = "მეილით, ";
+        errorInfo = "ამ მეილით, მომხმარებელი უკვე არსებობს";
       }
 
-      if (existingUser.nickname == nickname) {
-        errorInfo = "სახელით, ";
+      if (existingUser.identifier == identifier) {
+        errorInfo = "იდენტიფიკატორი, მიუღებელია";
       }
 
       if (existingUser.phone == phone) {
-        errorInfo = "ნომრით, ";
+        errorInfo = "ამ ნომრით, მომხმარებელი უკვე არსებობს";
       }
 
-      return res
-        .status(400)
-        .json({ error: `ამ ${errorInfo} მომხმარებელი უკვე არსებობს` });
+      return res.status(400).json({ error: ` ${errorInfo} ` });
     } else {
       const newUser = new user({
         email,
         password,
         confirm,
-        nickname,
+        identifier,
         prefix,
         phone,
         agreement,
