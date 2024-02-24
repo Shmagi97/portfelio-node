@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import { userSchemaRegister } from "../userShema/userShema.js";
 
 const router = express.Router();
 
@@ -9,30 +10,7 @@ router.get("/", (req, res) => {
 
 const dbUsers = mongoose.connection.useDb("Users");
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-  },
-  password: {
-    type: String,
-  },
-  confirm: {
-    type: String,
-  },
-  identifier: {
-    type: String,
-  },
-  prefix: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-  agreement: {
-    type: Boolean,
-  },
-});
-const user = dbUsers.model("user", userSchema, "users-register");
+const user = dbUsers.model("user", userSchemaRegister, "users-register");
 
 router.post("/", async (req, res) => {
   const {
@@ -48,6 +26,7 @@ router.post("/", async (req, res) => {
   } = req.body;
 
   try {
+    // გასაწერია დალოგინებისას წამოიღოს მონაცმეთა ბაზიდან რეგისტერუზერინფო ობიექტი
     if (nameValue && paswordValue) {
       try {
         const findUser = await user.findOne({

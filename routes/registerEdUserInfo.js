@@ -1,129 +1,16 @@
 import express, { json } from "express";
 import mongoose from "mongoose";
+import { userSchemaRegisterInfo } from "../userShema/userShema.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send(" this is registerUserInfo  page ");
-});
-
 const dbRegisterUserInfo = mongoose.connection.useDb("Users");
 
-const userSchema = new mongoose.Schema({
-  identifier: {
-    type: String,
-  },
-  nameAndSurname: {
-    type: String,
-  },
-  radioinfo: {
-    type: String,
-  },
-
-  address: {
-    type: String,
-  },
-  dateOfBirth: {
-    type: Date,
-  },
-  CompanyExperienceDuration: {
-    type: [Date],
-  },
-  education: {
-    type: String,
-  },
-  experience: {
-    type: String,
-  },
-  workingValueChange: {
-    type: Boolean,
-  },
-  newUploadPhoto: [
-    {
-      uid: { String },
-      lastModified: { Number },
-      lastModifiedDate: { Date },
-      name: { String },
-      size: { Number },
-      type: { String },
-      percent: { Number },
-      originFileObj: {
-        uid: { String },
-      },
-      status: { String },
-    },
-  ],
-
-  sliderSkills: [
-    {
-      name: { String },
-      value: { Number },
-    },
-  ],
-  linkFacebook: {
-    type: String,
-    validate: {
-      validator: function (value) {
-        try {
-          new URL(value);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      },
-
-      message: "Invalid URL Format",
-    },
-  },
-
-  linkGithub: {
-    type: String,
-    validate: {
-      validator: function (value) {
-        try {
-          new URL(value);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      },
-
-      message: "Invalid URL Format",
-    },
-  },
-
-  linkLinkedln: {
-    type: String,
-    validate: {
-      validator: function (value) {
-        try {
-          new URL(value);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      },
-
-      message: "Invalid URL Format",
-    },
-  },
-  selectProfesionUser: [
-    {
-      selectedProfesion: [String],
-    },
-  ],
-  companyName: {
-    type: String,
-  },
-  CompanyActivity: {
-    type: String,
-  },
-  CompanyLoans: {
-    type: String,
-  },
-});
-
-const user = dbRegisterUserInfo.model("user", userSchema, "registerEdUserInfo");
+const user = dbRegisterUserInfo.model(
+  "user",
+  userSchemaRegisterInfo,
+  "registerEdUserInfo"
+);
 
 router.post("/", async (req, res) => {
   const {
@@ -179,6 +66,7 @@ router.post("/", async (req, res) => {
         .save()
         .then((saved) => {
           console.log("saved employable mongoDB", saved);
+          res.redirect(`/users/${saved._id}`);
         })
         .catch((err) => {
           console.log("saved employable failed", err);
@@ -201,16 +89,12 @@ router.post("/", async (req, res) => {
         .save()
         .then((saved) => {
           console.log("saved employer mongoDB", saved);
-          res.redirect(`/registerEdUserInfo${saved._id}`);
-          // redirect - ით გასატესტია
+          res.redirect(`/users/${saved._id}`);
         })
         .catch((err) => {
           console.log("saved employer failed", err);
         });
     }
-
-    res.status(200);
-    json({ message: "მონაცემები აიტვირთა წარმატებით" });
   } catch (error) {
     console.error(error);
     res
