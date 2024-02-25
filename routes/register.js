@@ -2,9 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import { userSchemaRegister } from "../userShema/userShema.js";
 
-const router = express.Router();
+const registerRouter = express.Router();
 
-router.get("/", (req, res) => {
+registerRouter.get("/", (req, res) => {
   res.send(" this is register  page");
 });
 
@@ -12,7 +12,7 @@ const dbUsers = mongoose.connection.useDb("Users");
 
 const user = dbUsers.model("user", userSchemaRegister, "users-register");
 
-router.post("/", async (req, res) => {
+registerRouter.post("/", async (req, res) => {
   const {
     email,
     password,
@@ -26,7 +26,6 @@ router.post("/", async (req, res) => {
   } = req.body;
 
   try {
-    // გასაწერია დალოგინებისას წამოიღოს მონაცმეთა ბაზიდან რეგისტერუზერინფო ობიექტი
     if (nameValue && paswordValue) {
       try {
         const findUser = await user.findOne({
@@ -35,7 +34,7 @@ router.post("/", async (req, res) => {
         });
 
         if (findUser) {
-          return res.status(201).json({ loggin: "წარმატებული შესვლა" });
+          return res.redirect(`/usersIdentifier/${nameValue}`);
         } else {
           return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
         }
@@ -86,4 +85,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-export default router;
+export default registerRouter;

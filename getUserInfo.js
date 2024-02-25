@@ -2,7 +2,7 @@ import expres from "express";
 import mongoose from "mongoose";
 import { userSchemaRegisterInfo } from "./userShema/userShema.js";
 
-const router = expres.Router();
+const routerUserInfo = expres.Router();
 const DbUserRegisterInfo = mongoose.connection.useDb("Users");
 
 const user = DbUserRegisterInfo.model(
@@ -11,7 +11,7 @@ const user = DbUserRegisterInfo.model(
   "registerEdUserInfo"
 );
 
-router.get("/:userID", async (req, res) => {
+routerUserInfo.get("/:userID", async (req, res) => {
   const userId = req.params.userID;
 
   try {
@@ -27,4 +27,23 @@ router.get("/:userID", async (req, res) => {
   }
 });
 
-export default router;
+const routerLoggin = expres.Router();
+
+routerLoggin.get("/:identifier", async (req, res) => {
+  const userIdentifier = req.params.identifier;
+
+  try {
+    const userDataIdentifier = await user.findOne({
+      identifier: userIdentifier,
+    });
+    if (!userDataIdentifier) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
+    res.status(200).json({ userDataIdentifier });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server Eroor" });
+  }
+});
+
+export { routerUserInfo, routerLoggin };

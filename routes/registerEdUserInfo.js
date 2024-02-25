@@ -2,7 +2,7 @@ import express, { json } from "express";
 import mongoose from "mongoose";
 import { userSchemaRegisterInfo } from "../userShema/userShema.js";
 
-const router = express.Router();
+const routerRegisterUserInfoRouter = express.Router();
 
 const dbRegisterUserInfo = mongoose.connection.useDb("Users");
 
@@ -12,7 +12,7 @@ const user = dbRegisterUserInfo.model(
   "registerEdUserInfo"
 );
 
-router.post("/", async (req, res) => {
+routerRegisterUserInfoRouter.post("/", async (req, res) => {
   const {
     identifier,
     radioinfo,
@@ -103,4 +103,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-export default router;
+export default routerRegisterUserInfoRouter;
