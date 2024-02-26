@@ -46,4 +46,4 @@ routerLoggin.get("/:identifier", async (req, res) => {
   }
 });
 
-export { routerUserInfo, routerLoggin };
+export { routerLoggin, routerUserInfo };

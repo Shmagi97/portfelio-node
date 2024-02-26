@@ -1,13 +1,13 @@
 import express from "express";
 import registerRouter from "./register.js";
-import routerRegisterUserInfoRouter from "./registerEdUserInfo.js";
+import registerUserInfoRouter from "./registerEdUserInfo.js";
 
 import { routerUserInfo, routerLoggin } from "../getUserInfo.js";
 
 const routers = express.Router();
 
 routers.use("/register", registerRouter);
-routers.use("/registerEdUserInfo", routerRegisterUserInfoRouter);
+routers.use("/registerEdUserInfo", registerUserInfoRouter);
 routers.use("/users", routerUserInfo);
 routers.use("/usersIdentifier", routerLoggin);
 

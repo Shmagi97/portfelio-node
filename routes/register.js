@@ -36,7 +36,9 @@ registerRouter.post("/", async (req, res) => {
         if (findUser) {
           return res.redirect(`/usersIdentifier/${nameValue}`);
         } else {
-          return res.status(400).json({ loggin: "სახელი ან პაროლი არასწორია" });
+          return res
+            .status(400)
+            .json({ loggin: "იდენთიფიკატორი ან პაროლი არასწორია" });
         }
       } catch (err) {
         console.error(err);
