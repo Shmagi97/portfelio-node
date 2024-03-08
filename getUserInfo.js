@@ -37,7 +37,9 @@ routerLoggin.get("/:identifier", async (req, res) => {
       identifier: userIdentifier,
     });
     if (!userDataIdentifier) {
-      return res.status(404).json({ error: "User Not Found" });
+      return res
+        .status(201)
+        .json({ error: "პერსონალური ინფორმაციის ვერ მოიძებნა" });
     }
     res.status(200).json({ userDataIdentifier });
   } catch (err) {

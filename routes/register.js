@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { userSchemaRegister } from "../userShema/userShema.js";
+import bcrypt from "bcrypt";
 
 const registerRouter = express.Router();
 
@@ -12,11 +13,13 @@ const dbUsers = mongoose.connection.useDb("Users");
 
 const user = dbUsers.model("user", userSchemaRegister, "users-register");
 
+const saltRounds = 12;
+const salt = bcrypt.genSaltSync(saltRounds);
+
 registerRouter.post("/", async (req, res) => {
   const {
     email,
     password,
-    confirm,
     identifier,
     prefix,
     phone,
@@ -26,11 +29,14 @@ registerRouter.post("/", async (req, res) => {
   } = req.body;
 
   try {
+    // daloginebis procesis validacia
     if (nameValue && paswordValue) {
+      const hashedUserPasword = bcrypt.hashSync(paswordValue, salt);
+
       try {
         const findUser = await user.findOne({
           identifier: nameValue,
-          password: paswordValue,
+          hashedPasword: hashedUserPasword,
         });
 
         if (findUser) {
@@ -67,10 +73,11 @@ registerRouter.post("/", async (req, res) => {
 
       return res.status(400).json({ error: ` ${errorInfo} ` });
     } else {
+      const hashedPasword = bcrypt.hashSync(password, salt);
+
       const newUser = new user({
         email,
-        password,
-        confirm,
+        hashedPasword,
         identifier,
         prefix,
         phone,

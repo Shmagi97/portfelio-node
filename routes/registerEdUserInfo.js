@@ -41,6 +41,7 @@ routerRegisterUserInfoRouter.post("/", async (req, res) => {
         const { xhr, thumbUrl, response, ...reset } = el;
         return reset;
       });
+      console.log(newUploadPhoto);
     }
 
     if (radioinfo === "employable") {
@@ -65,8 +66,8 @@ routerRegisterUserInfoRouter.post("/", async (req, res) => {
       await newUser
         .save()
         .then((saved) => {
-          // console.log("saved employable mongoDB", saved);
           // res.redirect(`/users/${saved._id}`);
+          res.status(201).json({ nameAndSurname });
         })
         .catch((err) => {
           console.log("saved employable failed", err);
@@ -88,8 +89,8 @@ routerRegisterUserInfoRouter.post("/", async (req, res) => {
       await newUser
         .save()
         .then((saved) => {
-          // console.log("saved employer mongoDB", saved);
           // res.redirect(`/users/${saved._id}`);
+          res.status(201).json({ nameAndSurname });
         })
         .catch((err) => {
           console.log("saved employer failed", err);
