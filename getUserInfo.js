@@ -1,21 +1,14 @@
 import expres from "express";
-import mongoose from "mongoose";
-import { userSchemaRegisterInfo } from "./userShema/userShema.js";
+import { userInfo } from "./userShema/userShema.js";
+import path from "path";
 
 const routerUserInfo = expres.Router();
-const DbUserRegisterInfo = mongoose.connection.useDb("Users");
-
-const user = DbUserRegisterInfo.model(
-  "user",
-  userSchemaRegisterInfo,
-  "registerEdUserInfo"
-);
 
 routerUserInfo.get("/:userID", async (req, res) => {
   const userId = req.params.userID;
 
   try {
-    const userData = await user.findById(userId);
+    const userData = await userInfo.findById(userId);
     if (!userData) {
       return res.status(404).json({ error: "User Not Found" });
     }
@@ -33,7 +26,7 @@ routerLoggin.get("/:identifier", async (req, res) => {
   const userIdentifier = req.params.identifier;
 
   try {
-    const userDataIdentifier = await user.findOne({
+    const userDataIdentifier = await userInfo.findOne({
       identifier: userIdentifier,
     });
     if (!userDataIdentifier) {
@@ -49,4 +42,11 @@ routerLoggin.get("/:identifier", async (req, res) => {
   }
 });
 
-export { routerLoggin, routerUserInfo };
+const usersImage = expres.Router();
+
+usersImage.get("/:photousUID", async (req, res) => {
+  const getPhotousUID = req.params.photousUID;
+  console.log(getPhotousUID);
+});
+
+export { routerLoggin, routerUserInfo, usersImage };

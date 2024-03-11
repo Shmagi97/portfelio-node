@@ -1,19 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import { userSchemaRegister } from "../userShema/userShema.js";
+import { userRegister } from "../userShema/userShema.js";
 
 const logginUsers = express.Router();
-
-const DbUsers = mongoose.connection.useDb("Users");
-const user = DbUsers.model("users", userSchemaRegister, "users-register");
 
 logginUsers.post("/", async (req, res) => {
   const { nameValue, paswordValue } = req.body;
 
   if (nameValue && paswordValue) {
     try {
-      const findUser = await user.findOne({
+      const findUser = await userRegister.findOne({
         identifier: nameValue,
       });
 

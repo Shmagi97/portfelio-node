@@ -1,16 +1,7 @@
 import express, { json } from "express";
-import mongoose from "mongoose";
-import { userSchemaRegisterInfo } from "../userShema/userShema.js";
+import { userInfo } from "../userShema/userShema.js";
 
 const routerRegisterUserInfoRouter = express.Router();
-
-const dbRegisterUserInfo = mongoose.connection.useDb("Users");
-
-const user = dbRegisterUserInfo.model(
-  "user",
-  userSchemaRegisterInfo,
-  "registerEdUserInfo"
-);
 
 routerRegisterUserInfoRouter.post("/", async (req, res) => {
   const {
@@ -45,7 +36,7 @@ routerRegisterUserInfoRouter.post("/", async (req, res) => {
     }
 
     if (radioinfo === "employable") {
-      const newUser = new user({
+      const newUser = new userInfo({
         identifier,
         radioinfo,
         nameAndSurname,
@@ -73,7 +64,7 @@ routerRegisterUserInfoRouter.post("/", async (req, res) => {
           console.log("saved employable failed", err);
         });
     } else {
-      const newUser = new user({
+      const newUser = new userInfo({
         identifier,
         radioinfo,
         nameAndSurname,

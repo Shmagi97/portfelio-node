@@ -21,6 +21,13 @@ const userSchemaRegister = new mongoose.Schema({
   },
 });
 
+const dbUsers = mongoose.connection.useDb("Users");
+const userRegister = dbUsers.model(
+  "user",
+  userSchemaRegister,
+  "users-register"
+);
+
 const userSchemaRegisterInfo = new mongoose.Schema({
   identifier: {
     type: String,
@@ -122,4 +129,12 @@ const userSchemaRegisterInfo = new mongoose.Schema({
   },
 });
 
-export { userSchemaRegister, userSchemaRegisterInfo };
+const dbRegisterUserInfo = mongoose.connection.useDb("Users");
+
+const userInfo = dbRegisterUserInfo.model(
+  "user",
+  userSchemaRegisterInfo,
+  "registerEdUserInfo"
+);
+
+export { userRegister, userInfo };

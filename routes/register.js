@@ -1,17 +1,12 @@
 import express from "express";
-import mongoose from "mongoose";
-import { userSchemaRegister } from "../userShema/userShema.js";
 import bcrypt from "bcrypt";
+import { userRegister } from "../userShema/userShema.js";
 
 const registerRouter = express.Router();
 
 registerRouter.get("/", (req, res) => {
   res.send(" this is register  page");
 });
-
-const dbUsers = mongoose.connection.useDb("Users");
-
-const user = dbUsers.model("user", userSchemaRegister, "users-register");
 
 const saltRounds = 12;
 const salt = bcrypt.genSaltSync(saltRounds);
@@ -20,7 +15,7 @@ registerRouter.post("/", async (req, res) => {
   const { email, password, identifier, prefix, phone, agreement } = req.body;
 
   try {
-    const existingUser = await user.findOne(
+    const existingUser = await userRegister.findOne(
       { email } || { identifier } || { phone }
     );
 
@@ -43,7 +38,7 @@ registerRouter.post("/", async (req, res) => {
     } else {
       const hashedPasword = bcrypt.hashSync(password, salt);
 
-      const newUser = new user({
+      const newUser = new userRegister({
         email,
         hashedPasword,
         identifier,
