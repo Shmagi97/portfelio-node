@@ -41,7 +41,8 @@ routerLoggin.get("/:identifier", async (req, res) => {
         .status(201)
         .json({ error: "პერსონალური ინფორმაციის ვერ მოიძებნა" });
     }
-    res.status(200).json({ userDataIdentifier });
+    const userIdetifirED = userDataIdentifier._id;
+    res.status(200).json({ userIdetifirED });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server Eroor" });

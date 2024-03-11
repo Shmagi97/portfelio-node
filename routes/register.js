@@ -17,41 +17,9 @@ const saltRounds = 12;
 const salt = bcrypt.genSaltSync(saltRounds);
 
 registerRouter.post("/", async (req, res) => {
-  const {
-    email,
-    password,
-    identifier,
-    prefix,
-    phone,
-    agreement,
-    nameValue,
-    paswordValue,
-  } = req.body;
+  const { email, password, identifier, prefix, phone, agreement } = req.body;
 
   try {
-    // daloginebis procesis validacia
-    if (nameValue && paswordValue) {
-      const hashedUserPasword = bcrypt.hashSync(paswordValue, salt);
-
-      try {
-        const findUser = await user.findOne({
-          identifier: nameValue,
-          hashedPasword: hashedUserPasword,
-        });
-
-        if (findUser) {
-          return res.redirect(`/usersIdentifier/${nameValue}`);
-        } else {
-          return res
-            .status(400)
-            .json({ loggin: "იდენთიფიკატორი ან პაროლი არასწორია" });
-        }
-      } catch (err) {
-        console.error(err);
-        res.status(400).json({ error: "სერვერზე მოხდა შეცდომა " });
-      }
-    }
-
     const existingUser = await user.findOne(
       { email } || { identifier } || { phone }
     );

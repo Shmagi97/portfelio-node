@@ -50,21 +50,8 @@ const userSchemaRegisterInfo = new mongoose.Schema({
   workingValueChange: {
     type: Boolean,
   },
-  newUploadPhoto: [
-    {
-      uid: { String },
-      lastModified: { Number },
-      lastModifiedDate: { Date },
-      name: { String },
-      size: { Number },
-      type: { String },
-      percent: { Number },
-      originFileObj: {
-        uid: { String },
-      },
-      status: { String },
-    },
-  ],
+
+  newUploadPhoto: [{ type: Object }],
 
   sliderSkills: [
     {
